@@ -1,0 +1,289 @@
+<!DOCTYPE>
+<html>
+<head>
+    <title>Table-Data in Jquery</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js">
+    </script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.0.min.js"></script>
+  <script src="https://cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css"></script>
+    <script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+    <script scr="data.json"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/1.6.4/fullcalendar.css" />
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+</head>
+<br>
+<form>
+    </br>
+    </br>
+    </br>
+    </br>
+    </br>
+    <div class="col-lg-3">
+        <input type="text" id="name" class="form-control" placeholder="Name">
+
+        </br>
+        <input type="text" id="gender" class="form-control" placeholder="Gender">
+        </br>
+        <input type="text" id="Designation" class="form-control" placeholder="Designation">
+
+    </div>
+    </br>
+
+    <input type="button" class="btn btn-success" onclick="add()" id="add-row" value="Add Row">
+    </br>
+    </br>
+    </br>
+    </br>
+    </br>
+
+
+    <input type="button" class="btn btn-success" onclick="display()" value="Show Table">
+</form>
+
+</br>
+<div class="container">
+    <center>
+        <h1>Showing Json data to Jquerytabledata</h1>
+    </center>
+    <table id="data-table" class="table table-bordered">
+        <thead>
+        <tr>
+            <th id="1">
+                Name:
+            </th>
+            <th id="2">
+                Gender:
+            </th>
+            <th id="3">
+                Designation:
+            </th>
+            <th id="4">
+                Action:
+            </th>
+        </tr>
+        </thead>
+    </table>
+
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <input type="text" id="edit_name" class="form-control" placeholder="Name" disabled>
+                </br>
+                <input type="text" id="edit_gender" class="form-control" placeholder="Gender">
+                </br>
+                <input type="text" id="edit_Designation" class="form-control" placeholder="Designation">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="save_chnage()" data-dismiss="modal">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+<script>
+    var i=0;
+    var edit=0;
+    var oTable;
+    var h=0;
+    var x;
+    var arr=[];
+    var oTable = null;
+
+    function display(){
+
+        $(document).ready(function() {
+           // alert("---->Sandeep");
+            oTable=  $('#data-table').DataTable({
+                destroy:true,
+                paging: false,
+                searching: false,
+                "aaData": arr,
+
+                "aoColumns": [{
+                    "mDataProp": "name"
+                }, {
+                    "mDataProp": "gender"
+                }, {
+                    "mDataProp": "designation"
+                },{
+                    "mDataProp": null,
+                    defaultContent: "<input type='button' class='btn btn-success' onclick='del()' value='Delete' /> &nbsp <input type='button' class='btn btn-primary' onclick='edit_fun()' value='Edit' data-toggle='modal' data-target='#myModal' />","": h=0,"":edit=0
+                }]
+            });
+
+        });
+    }
+    function edit_fun() {
+        if(edit===0)
+        {
+            oTable.$('td').click(function () {
+                var eData=oTable.row(this).data();
+                var k=eData.name;
+                for (i = 0; i < arr.length; i++) {
+                    if (k === arr[i].name) {
+                        //arr.splice(i, 1);
+                        // alert(arr.splice(i, 1));
+                        $('#edit_name').val(k);
+                        $('#edit_gender').val(arr[i].gender);
+                        $('#edit_Designation').val(arr[i].designation);
+                    }
+                }
+
+
+            });
+            edit++;
+        }
+
+    }
+    function save_chnage() {
+        var save =0;
+        if(save===0) {
+            $(document).ready(function () {
+
+                var name1 = $('#edit_name').val();
+                var gender1 = $('#edit_gender').val();
+                var des1 = $('#edit_Designation').val();
+                for (var j=0;j<arr.length;j++){
+                    //alert(name1);
+                    if(name1===arr[j].name)
+                    {
+                        alert(name1);
+                        arr[j].name=name1;
+                        arr[j].gender=gender1;
+                        arr[j].designation=des1;
+                    }
+                }
+                display();
+            });
+            save++;
+        }
+
+
+    }
+    function del() {
+        alert("dfsdzd");
+        if(h===0) {
+            oTable.$('td').click(function () {
+                var sData = oTable.row(this).data();
+               x = sData.name;
+               // alert(x);
+                //console.log(x);
+                for (i = 0; i < arr.length; i++) {
+                    if (x === arr[i].name) {
+                        arr.splice(i, 1);
+                       // alert(arr.splice(i, 1));
+
+                    }
+                }
+                display();
+
+
+            });
+            h++;
+        }
+
+    }
+    function add() {
+      //  alert("<--------");
+
+        var obj={};
+       $(document).ready(function() {
+
+           var name=$('#name').val();
+           var gender=$('#gender').val();
+           var des=$('#Designation').val();
+           alert(des);
+           obj={
+               "name" : name,
+               "gender" : gender,
+               "designation" : des
+           }
+           arr.push(obj);
+           console.log(arr);
+
+          /*  });*/
+
+        });
+        $(".reset").click(function() {
+            $(this).closest('form').find("input[type=text], textarea").val("");
+        });
+    }
+
+</script>
+
+</html>
+
+</html>
+
+
+
+
+
+<!--
+
+/* var name=$('#name').val();
+var gender=$('#gender').val();
+var des=$('#designation').val();
+var arr=[];
+arr.push(name);
+arr.push(gender);
+arr.push(des);*/
+-->
+
+<!--<script type = "application/javascript">
+        function loadJSON(){
+            var data_file = "http://localhost:63342/Json_example/js/data.json";
+            var http_request = new XMLHttpRequest();
+               // http_request = new XMLHttpRequest();
+
+            http_request.onreadystatechange = function(){
+
+                if (http_request.readyState == 4  ){
+                    var jsonObj = JSON.parse(data_file);
+                    document.getElementById("Name").innerHTML = jsonObj.name;
+                    document.getElementById("age").innerHTML = jsonObj.age;
+                }
+            }
+
+            http_request.open("GET", http_request.responseText, true);
+            http_request.send();
+        }
+
+    </script>-->
+<!--  <script>
+      function loadJSON() {
+          var xhttp = new XMLHttpRequest();
+          xhttp.onreadystatechange = function() {
+              var jj=this.responseText;
+              var Json_obj=JSON.parse(jj);
+              console.log(this.responseText);
+              if (this.readyState == 4 && this.status == 200) {
+                  document.getElementById("Name").innerHTML = Json_obj.name;
+                  document.getElementById("age").innerHTML = Json_obj.age;
+              }
+          };
+          xhttp.open("GET", "/Json_example/js/data.json", true);
+          xhttp.send();
+      }
+  </script>-->
